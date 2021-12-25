@@ -70,7 +70,7 @@ export default {
       isShow:false,
       options:[],//六個隨機題目
       option:'',//單前題目
-      seconds:20,//倒計時
+      seconds:3,//倒計時
       finishQuestion:false,
       raw_predictions: [], // 存儲所有類別的原始預測概率
       mousePressed: false, // 將鼠標按下事件傳播到組件中
@@ -97,11 +97,11 @@ export default {
             clearInterval(interval);
             this.submitDrawing()
             this.isShow=false
-            this.seconds=20
+            this.seconds=3
+            this.clearCanvas()
             // 產生下一題
             this.randomQuestion()
             // 清除猜測結果
-            this.likey=[]
             // 題目大於六個，已完成時
             if(this.options.length>6){
                 this.finishQuestion=true
