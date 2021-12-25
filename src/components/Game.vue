@@ -1,23 +1,31 @@
 <!-- Base component of Discover Quickdraw page -->
 <template>
   <div>
+
    <!-- 開始按鈕 -->
    <div v-show='!startShow' style=" display: flex;justify-content: center;align-items: center; height:100vh">
        <button  @click="startEvent()" style='font-size:30px;'>開始塗鴉遊戲</button>
   </div>
    <!-- 開始後的內容 -->
    <div v-show='startShow'>
-        <div class="container" v-if='!finishQuestion'>
+        <div class="container" v-if='!finishQuestion'  >
           <!-- 開始提示 -->
-          <div v-show="!isShow">
+          <div v-show="!isShow" style="text-align: center;">
             <p>塗鴉 {{options.indexOf(option)+1}}/6 </p>
             <p>畫出</p>
             <p>{{option}}</p>
             <p>時間只有20秒</p>
-            <button @click="showOthers()">我知道了</button>
+            <button @click="showOthers()" style="font-size: 20px;">我知道了</button>
           </div>
+          <!-- Loading screen -->
           <!-- 遊戲 -->
           <div v-show="isShow" style="text-align: center;">
+            <loading
+            :active="!loadingModelOver"
+            :can-cancel="false"
+            :is-full-page="true"
+            color="#428bca"
+          ></loading>
             <p >請畫出：{{option}}</p>
             <p v-if='seconds.toString().length>1'>倒計時：00:<span>{{seconds}}</span></p>
             <p v-else>倒計時：00:<span>0{{seconds}}</span></p>
@@ -45,12 +53,17 @@
 <script>
 import { BIG_CLASS_NAMES_CHINESS ,BIG_CLASS_NAMES} from "../utils/class_names";
 
-const BIG_MODEL_URL = "./big_model/model.json";
+import Loading from "vue-loading-overlay";
+import "vue-loading-overlay/dist/vue-loading.css";
 
+const BIG_MODEL_URL = "./big_model/model.json";
 import { TFModel, disposeTFVariables } from "../utils/model";
 
 export default {
   name: "GameModel",
+  components: {
+    loading:Loading
+  },
   data() {
     return {
       startShow:false,
@@ -76,19 +89,21 @@ export default {
       this.isShow = !this.isShow
     },
     startTimer:function () { // 倒計時
-        let counter = this.seconds;
+        let counter=this.seconds
         const interval = setInterval(() => {
           counter--;
-          this.seconds=counter;
+          this.seconds=counter
           if (counter <= 0 ) {
             clearInterval(interval);
             this.submitDrawing()
+            this.isShow=false
+            this.seconds=20
             // 產生下一題
             this.randomQuestion()
             // 清除猜測結果
             this.likey=[]
             // 題目大於六個，已完成時
-            if(this.options.length>1){
+            if(this.options.length>6){
                 this.finishQuestion=true
             }
           }
@@ -256,6 +271,7 @@ export default {
   },
   mounted(){
     // 挂载后
+    this.loadingModelOver = false;
     // 創建一個畫板
     let that = this;
     this.canvas = new fabric.Canvas("panel", {
@@ -285,6 +301,7 @@ export default {
       this.big_model.loadModel(BIG_MODEL_URL),
     ]).then(() => {
       this.loadingModelOver = true;
+      console.log(this.loadingModelOver )
     });
   },
   beforeUpdate(){
