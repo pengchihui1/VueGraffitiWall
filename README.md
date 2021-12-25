@@ -11,8 +11,14 @@ npm install 或者 yarn
 npm run dev  或者 yarn dev
 ```
 
-###項目類型
+### 項目類型
 
 ```
 Vue
+```
+
+### 端口
+
+```
+http://localhost:8080/
 ```

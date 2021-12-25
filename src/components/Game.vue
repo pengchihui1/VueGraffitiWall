@@ -2,22 +2,22 @@
 <template>
   <div>
    <!-- 開始按鈕 -->
-  <div v-show='!startShow' style=" display: flex;justify-content: center;align-items: center; height:100vh">
-    <button  @click="startEvent()" style='font-size:30px;'>開始塗鴉遊戲</button>
+   <div v-show='!startShow' style=" display: flex;justify-content: center;align-items: center; height:100vh">
+       <button  @click="startEvent()" style='font-size:30px;'>開始塗鴉遊戲</button>
   </div>
    <!-- 開始後的內容 -->
    <div v-show='startShow'>
         <div class="container" v-if='!finishQuestion'>
           <!-- 開始提示 -->
-          <div v-show="!isShow">
-            <p>塗鴉 {{options.indexOf(option)+1}}/6</p>
+          <!-- <div v-show="!isShow">
+            <p>塗鴉 {{options.indexOf(option)+1}}/6 </p>
             <p>畫出</p>
-            <p >{{option}}</p>
+            <p>{{option}}</p>
             <p>時間只有20秒</p>
             <button @click="showOthers()">我知道了</button>
-          </div>
+          </div> -->
           <!-- 遊戲 -->
-          <div v-show="isShow" style="text-align: center;">
+          <!-- <div v-show="isShow" style="text-align: center;">
             <p >請畫出：{{option}}</p>
             <p v-if='seconds.toString().length>1'>倒計時：00:<span>{{seconds}}</span></p>
             <p v-else>倒計時：00:<span>0{{seconds}}</span></p>
@@ -30,13 +30,13 @@
               </div>
             </main>
             <p>可能是：{{likey.length?likey.join(','):''}}</p>
-        </div>
+          </div> -->
         </div>
         <!-- 結束比對 -->
-        <div  v-else style='display: flex;justify-content: center;align-items: center; height:100vh'> 
-        <button style='font-size:30px;'><a href="/">遊戲結束，返回首頁</a></button>
-        <!-- <p>我們的神經網絡視圖識別你畫的塗鴉內容，但全部猜錯了。你可以選擇其中一個塗鴉，看看神經網絡竟識別出什麼。</p> -->
-        <!-- <div><button><a href="/">再玩一次</a></button><button><a href="/">返回首頁</a></button></div> -->
+        <div v-else style='display: flex;justify-content: center;align-items: center; height:100vh'> 
+          <!-- <button style='font-size:30px;'><a href="/">遊戲結束，返回首頁</a></button> -->
+          <!-- <p>我們的神經網絡視圖識別你畫的塗鴉內容，但全部猜錯了。你可以選擇其中一個塗鴉，看看神經網絡竟識別出什麼。</p> -->
+          <!-- <div><button><a href="/">再玩一次</a></button><button><a href="/">返回首頁</a></button></div> -->
         </div>
   </div>
 </div>
