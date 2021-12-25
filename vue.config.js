@@ -1,5 +1,6 @@
 module.exports = {
     publicPath: '/',
-    // publicPath: process.env.NODE_ENV === 'production' ?
-    //     '/quickdraw-minigame/' : '/'
+    // publicPath: process.env.NODE_ENV === 'production'
+    // ? '/VueGraffitiWall/'
+    // : '/'
 }

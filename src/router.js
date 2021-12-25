@@ -1,8 +1,8 @@
 import Vue from 'vue'
 import Router from 'vue-router'
 import Game from './views/Game.vue'
-// import Home from './views/Home.vue'
-// import Train from './views/Train.vue'
+import Home from './views/Home.vue'
+import Train from './views/Train.vue'
 
 Vue.use(Router)
 
