@@ -1,8 +1,6 @@
 # QuickDraw sketch game
 
-A minigame around Quickdraw - have a basic CNN recognize your drawings, or train a CNN on your own drawings !
-
-This prototype was an opportunity for me to play around Tensorflow.js, Vue.js., IndexedDB to store drawings.
+一个围绕 Quickdraw 的小游戏——让一个基本的 CNN 识别你的画，或者在你自己的画上训练一个 CNN！
 
 ### Project setup
 

@@ -1,8 +1,7 @@
 <template>
   <div id="app">
     <!-- 顯示內容 -->
-    <!-- <router-view /> -->
-    <p style="text-align: center; font-size: 40px;">欢迎来到Vue</p>
+    <router-view />
   </div>
 </template>
 
