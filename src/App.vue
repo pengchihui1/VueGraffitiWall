@@ -1,6 +1,13 @@
 <template>
   <div id="app">
     <!-- 顯示內容 -->
+    <!-- <div id="nav">
+      <ul>
+        <router-link tag="li" class="link" to="/">塗鴉遊戲</router-link>|
+        <router-link tag="li" class="link" to="/home">Discover QuickDraw</router-link>|
+        <router-link tag="li" class="link" to="/train">Train your CNN</router-link>
+      </ul>
+    </div> -->
     <router-view />
   </div>
 </template>

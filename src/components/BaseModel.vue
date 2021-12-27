@@ -62,7 +62,7 @@
 
 <script>
 import "fabric";
-import { SMALL_CLASS_NAMES, BIG_CLASS_NAMES } from "../utils/class_names";
+import { SMALL_CLASS_NAMES, BIG_CLASS_NAMES ,BIG_CLASS_NAMES_CHINESS} from "../utils/class_names";
 
 import ECharts from "vue-echarts";
 import "echarts/lib/chart/bar";
@@ -155,7 +155,7 @@ export default {
       /**
        * Add a point to the top class in predictions in result table for model
        */
-      const winClass = this.getTopClassNames[0];
+      const winClass = this.getTopClassNames[0].englishName;
       this.$toasted.show(
         "Your submission for '" + winClass + "' has been taken"
       );
@@ -251,9 +251,9 @@ export default {
       return {
         xAxis: {
           type: "category",
-          data: this.getTopClassNames,
+          data: !this.toggleBigModel? this.getTopClassNames : this.getTopClassNames.map(item=>item.chineseName) ,
           axisLabel: {
-            rotate: 45,
+            rotate: 0,
           },
         },
         yAxis: {
@@ -274,7 +274,7 @@ export default {
       if (!this.toggleBigModel) {
         return SMALL_CLASS_NAMES;
       } else {
-        return BIG_CLASS_NAMES;
+        return BIG_CLASS_NAMES_CHINESS;
       }
     },
     getLengthNames: function () {
@@ -290,6 +290,7 @@ export default {
     },
   },
   mounted() {
+    // 挂载后
     this.loadingModelOver = false;
 
     if (Object.entries(this.small_ranking).length === 0) {
@@ -310,12 +311,16 @@ export default {
     this.canvas.on("mouse:up", function (e) {
       that.submitCanvas();
       that.mousePressed = false;
+    
     });
     this.canvas.on("mouse:down", function (e) {
       that.mousePressed = true;
     });
     this.canvas.on("mouse:move", function (e) {
-      that.recordCoor(e);
+      // that.recordCoor(e);
+      if(that.mousePressed){
+          that.recordCoor(e);
+      }
     });
 
     this.small_model = new TFModel();

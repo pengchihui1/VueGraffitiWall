@@ -3,29 +3,30 @@
   <div>
 
    <!-- 開始按鈕 -->
-   <div v-show='!startShow' style=" display: flex;justify-content: center;align-items: center; height:100vh">
-       <button  @click="startEvent()" style='font-size:30px;'>開始塗鴉遊戲</button>
+   <div v-show='!startShow' style="display:flex; justify-content:center;align-items:center; height:100vh">
+     <!-- Loading screen -->
+      <loading
+      :active="!loadingModelOver"
+      :can-cancel="false"
+      :is-full-page="true"
+      color="#428bca"
+      v-if="!loadingModelOver"
+    ></loading>
+    <button @click="startEvent()" style='font-size:30px;' v-else>開始塗鴉吧！</button>
   </div>
    <!-- 開始後的內容 -->
    <div v-show='startShow'>
         <div class="container" v-if='!finishQuestion'  >
           <!-- 開始提示 -->
           <div v-show="!isShow" style="text-align: center;">
-            <p>塗鴉 {{options.indexOf(option)+1}}/6 </p>
+            <p>塗鴉 {{this.options.length+1}}/6 </p>
             <p>畫出</p>
             <p>{{option}}</p>
             <p>時間只有20秒</p>
-            <button @click="showOthers()" style="font-size: 20px;">我知道了</button>
+            <button @click="showOthers()" style="font-size: 20px;">知道了</button>
           </div>
-          <!-- Loading screen -->
           <!-- 遊戲 -->
           <div v-show="isShow" style="text-align: center;">
-            <loading
-            :active="!loadingModelOver"
-            :can-cancel="false"
-            :is-full-page="true"
-            color="#428bca"
-          ></loading>
             <p >請畫出：{{option}}</p>
             <p v-if='seconds.toString().length>1'>倒計時：00:<span>{{seconds}}</span></p>
             <p v-else>倒計時：00:<span>0{{seconds}}</span></p>
@@ -33,7 +34,7 @@
             <main class="main">
               <div class="main__content">
                 <div class="main__canvas">
-                  <canvas id="panel" class="canvas" width="1000px" height="400px"></canvas>
+                  <canvas id="panel" class="canvas" width="400" height="400"></canvas>
                 </div>
               </div>
             </main>
@@ -42,9 +43,14 @@
         </div>
         <!-- 結束比對 -->
         <div v-else style='display: flex;justify-content: center;align-items: center; height:100vh'> 
-          <button style='font-size:30px;'><a href="/">遊戲結束，返回首頁</a></button>
-          <!-- <p>我們的神經網絡視圖識別你畫的塗鴉內容，但全部猜錯了。你可以選擇其中一個塗鴉，看看神經網絡竟識別出什麼。</p> -->
-          <!-- <div><button><a href="/">再玩一次</a></button><button><a href="/">返回首頁</a></button></div> -->
+          <div>
+            <ul id="example-1">
+             <li v-for="(item, index) in options" :key="index">
+              {{ item.name }}（{{ item.state?'塗鴉正確':'塗鴉不正確' }}）
+            </li>
+          </ul>
+          </div>
+          <button style='font-size:30px;'><a href="/" >遊戲結束，返回首頁</a></button>
         </div>
   </div>
 </div>
@@ -66,12 +72,12 @@ export default {
   },
   data() {
     return {
-      startShow:false,
-      isShow:false,
+      startShow: false,
+      isShow: false,
       options:[],//六個隨機題目
       option:'',//單前題目
       seconds:20,//倒計時
-      finishQuestion:false,
+      finishQuestion: false,
       raw_predictions: [], // 存儲所有類別的原始預測概率
       mousePressed: false, // 將鼠標按下事件傳播到組件中
       coords: [], // 存儲繪製點的所有坐標
@@ -98,34 +104,46 @@ export default {
             this.submitDrawing()
             this.isShow=false
             this.seconds=20
-            this.clearCanvas()
+            // 判断猜测是否与题目相同，相同则正确
+            if(this.option=== this.likey[this.likey.length-1]){
+              this.options=this.options.map(item=>{if(item.name===option)item.state=true})
+            }
             // 產生下一題
             this.randomQuestion()
-            // 清除猜測結果
             // 題目大於六個，已完成時
-            if(this.options.length>6){
+            if(this.options.length>=6){
                 this.finishQuestion=true
             }
+            this.clearCanvas()
           }
         }, 1000);
     },
     verifyTimer:function(secondes){
         const interval = setInterval(() => {
           secondes-=1;
-          this.submitDrawing();//每兩秒猜測一次結果
-          if (secondes <= 0 ) {
+          this.submitDrawing(); //每兩秒猜測一次結果
+          if (secondes <= 1 ) {
             clearInterval(interval);
           }
         }, 1000);
     },
-    randomQuestion:function(){
-      const option=BIG_CLASS_NAMES_CHINESS[Math.floor(Math.random()*BIG_CLASS_NAMES_CHINESS.length)]
-      this.options.push(option)
+    randomQuestion:function(){//隨機產生題目
+      let option=BIG_CLASS_NAMES_CHINESS[Math.floor(Math.random()*BIG_CLASS_NAMES_CHINESS.length)].chineseName
+      this.options.push({name:option,state:false})
       this.option=option
+      if(!this.options.filter(item=>item===option).length){
+         // 題目不能重複進行創建
+        this.options.push({name:option,state:false})
+        this.option=option
+      }else{
+        // 題目重複重新創建
+        this.randomQuestion()
+      }
     },
     recordCoor(e) {
       /**
        * Record the x,y coordinates of mouse on canvas when mouse is pressed
+       * 按下鼠標時記錄鼠標在畫布上的 x,y 坐標
        */
       var pointer = this.canvas.getPointer(event.e);
       var posX = pointer.x;
@@ -134,11 +152,11 @@ export default {
       if (posX >= 0 && posY >= 0 && this.mousePressed) {
         this.coords.push(pointer);
       }
-     
     },
     getMinBox() {
       /**
        * Get top left and bottom right coords of bounding box of the drawing
+       * 獲取圖形邊界框的左上角和右下角坐標
        */
       var coorX = this.coords.map(function (p) {
         return p.x;
@@ -162,7 +180,8 @@ export default {
     },
     submitCanvas() {
       /**
-       * Get image on canvas and submit it to the model for prediction
+       * Get image on canvas and submit it to the model for prediction  
+       * 在畫布上獲取圖像並將其提交給模型進行預測
        */
       let input_img = this.getImageData();
       this.raw_predictions = this.big_model.predictClass(input_img);
@@ -170,14 +189,16 @@ export default {
     submitDrawing() {
       /**
        * Add a point to the top class in predictions in result table for model
+       * 在模型的結果表中的預測中添加一個點到頂級
        */
-      const winClass = this.getTopClassNames()[0];
+      const winClass = this.getTopClassNames()[0] ? this.getTopClassNames()[0].chineseName:'猜不到';
       this.big_ranking[winClass] = this.big_ranking[winClass];
       this.likey.push(winClass)
      },
     clearCanvas() {
       /**
        * Resets the canvas
+       * 重置畫布
        */
       this.canvas.clear();
       this.canvas.backgroundColor = "#FFFFFF";
@@ -191,7 +212,6 @@ export default {
        */
       const mbb = this.getMinBox();
       const dpi = window.devicePixelRatio;
-
       const imgData = this.canvas.contextContainer.getImageData(
         mbb.min.x * dpi,
         mbb.min.y * dpi,
@@ -202,7 +222,8 @@ export default {
     },
     getTopClassNames: function () {
       /**
-       * Find classes for highest predicted indices from findIndicesOfMax //最高預測的類
+       * Find classes for highest predicted indices from findIndicesOfMax 
+       * 最高預測的類
        */
       var outp = [];
       let indices = this.findIndicesOfMax;
@@ -301,7 +322,6 @@ export default {
       this.big_model.loadModel(BIG_MODEL_URL),
     ]).then(() => {
       this.loadingModelOver = true;
-      console.log(this.loadingModelOver )
     });
   },
   beforeUpdate(){

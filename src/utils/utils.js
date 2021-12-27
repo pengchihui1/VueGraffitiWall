@@ -3,21 +3,22 @@ import * as tf from "@tensorflow/tfjs";
 function preprocess(img) {
     /**
      * Convert an image from canvas to a tensor that the model can process
+     * 將圖像從畫布轉換為模型可以處理的張量
      */
     return tf.tidy(() => {
-        //convert to a tensor
+        //convert to a tensor 轉換為張量
         let tensor = tf.browser.fromPixels(img, 1);
 
-        //resize
+        //resize 調整大小
         const resized = tf.image
             .resizeBilinear(tensor, [28, 28], true)
             .toFloat();
 
-        //normalize
+        //normalize 標準化
         const offset = tf.scalar(255.0);
         const normalized = tf.scalar(1.0).sub(resized.div(offset));
 
-        //We add a dimension to get a batch shape
+        //We add a dimension to get a batch shape 我們添加一個維度以獲得批量形狀
         const batched = normalized.expandDims(0);
         return batched;
     });
