@@ -21,6 +21,29 @@ const SMALL_CLASS_NAMES = [
     "cell phone",
 ]
 
+const SMALL_CLASS_NAMES_CHINESS=[
+    {id:1,englishName:"sailboat",chineseName:"帆船"},
+    {id:2,englishName:"pliers",chineseName:"鉗子"},
+    {id:3,englishName:"see saw",chineseName:"見鋸"},
+    {id:4,englishName:"garden hose",chineseName:"花園軟管"},
+    {id:5,englishName:"cactus",chineseName:"仙人掌"},
+    {id:6,englishName:"eyeglasses",chineseName:"眼鏡"},
+    {id:7,englishName:"nose",chineseName:"鼻子"},
+    {id:8,englishName:"stairs",chineseName:"樓梯"},
+    {id:9,englishName:"envelope",chineseName:"信封"},
+    {id:10,englishName:"bucket",chineseName:"水桶"},
+    {id:11,englishName:"fireplace",chineseName:"壁爐"},
+    {id:12,englishName:"swing set",chineseName:"鞦韆椅"},
+    {id:13,englishName:"lantern",chineseName:"燈籠"},
+    {id:14,englishName:"banana",chineseName:"香蕉"},
+    {id:15,englishName:"spreadsheet",chineseName:"電子表格"},
+    {id:16,englishName:"elephant",chineseName:"大象"},
+    {id:17,englishName:"fish",chineseName:"魚"},
+    {id:18,englishName:"helicopter",chineseName:"直升機"},
+    {id:19,englishName:"axe",chineseName:"斧頭"},
+    {id:20,englishName:"cell phone",chineseName:"手機"},
+]
+
 const BIG_CLASS_NAMES = [
     "sailboat",
     "pliers",
@@ -719,6 +742,7 @@ const BIG_CLASS_NAMES_CHINESS=[
     
 export {
     SMALL_CLASS_NAMES,
+    SMALL_CLASS_NAMES_CHINESS,
     BIG_CLASS_NAMES,
     BIG_CLASS_NAMES_CHINESS
 }

@@ -19,7 +19,7 @@
         <div class="container" v-if='!finishQuestion'  >
           <!-- 開始提示 -->
           <div v-show="!isShow" style="text-align: center;">
-            <p>塗鴉 {{this.options.length+1}}/6 </p>
+            <p>塗鴉 {{this.options.length}}/6 </p>
             <p>畫出</p>
             <p>{{option}}</p>
             <p>時間只有20秒</p>
@@ -30,11 +30,15 @@
             <p >請畫出：{{option}}</p>
             <p v-if='seconds.toString().length>1'>倒計時：00:<span>{{seconds}}</span></p>
             <p v-else>倒計時：00:<span>0{{seconds}}</span></p>
-            <button style='font-size:20px; margin-bottom: 4px;' @click="clearCanvas()">清除</button>
+            <div style='font-size:20px; margin-bottom: 4px;'>
+              <button style='margin-right: 10px;' @click="clearCanvas()">清除</button>
+              <button style='margin-right: 10px;' @click="nextQuestion()" v-show="options.length<=5">下一題</button>
+              <button @click="clearCanvas()">退出</button>
+            </div>
             <main class="main">
               <div class="main__content">
                 <div class="main__canvas">
-                  <canvas id="panel" class="canvas" width="400" height="400"></canvas>
+                  <canvas id="panel" class="canvas" width="600px" height="600px"></canvas>
                 </div>
               </div>
             </main>
@@ -57,11 +61,11 @@
 </template>
 
 <script>
-import { BIG_CLASS_NAMES_CHINESS ,BIG_CLASS_NAMES} from "../utils/class_names";
+import { BIG_CLASS_NAMES_CHINESS , SMALL_CLASS_NAMES_CHINESS } from "../utils/class_names";
 
 import Loading from "vue-loading-overlay";
 import "vue-loading-overlay/dist/vue-loading.css";
-
+const SMALL_MODEL_URL = "./small_model/model.json";
 const BIG_MODEL_URL = "./big_model/model.json";
 import { TFModel, disposeTFVariables } from "../utils/model";
 
@@ -77,7 +81,7 @@ export default {
       options:[],//六個隨機題目
       option:'',//單前題目
       seconds:20,//倒計時
-      finishQuestion: false,
+      finishQuestion: false, //完成題目
       raw_predictions: [], // 存儲所有類別的原始預測概率
       mousePressed: false, // 將鼠標按下事件傳播到組件中
       coords: [], // 存儲繪製點的所有坐標
@@ -108,13 +112,15 @@ export default {
             if(this.option=== this.likey[this.likey.length-1]){
               this.options=this.options.map(item=>{if(item.name===option)item.state=true})
             }
-            // 產生下一題
-            this.randomQuestion()
-            // 題目大於六個，已完成時
+               // 題目大於六個，已完成時
             if(this.options.length>=6){
                 this.finishQuestion=true
+            }else{
+                // 產生下一題
+                this.randomQuestion()
             }
             this.clearCanvas()
+         
           }
         }, 1000);
     },
@@ -127,11 +133,22 @@ export default {
           }
         }, 1000);
     },
+    nextQuestion:function(){
+          this.submitDrawing()
+          this.isShow=false
+          this.seconds=20
+          // 產生下一題
+          this.randomQuestion()
+          // 題目大於六個，已完成時
+          if(this.options.length>6){
+              this.finishQuestion=true
+          }
+          this.clearCanvas()
+          console.log(this.likey.length,this.options)
+    },
     randomQuestion:function(){//隨機產生題目
-      let option=BIG_CLASS_NAMES_CHINESS[Math.floor(Math.random()*BIG_CLASS_NAMES_CHINESS.length)].chineseName
-      this.options.push({name:option,state:false})
-      this.option=option
-      if(!this.options.filter(item=>item===option).length){
+      let option=SMALL_CLASS_NAMES_CHINESS[Math.floor(Math.random()*SMALL_CLASS_NAMES_CHINESS.length)].chineseName
+      if(!this.options.filter(item=>item.name===option).length){
          // 題目不能重複進行創建
         this.options.push({name:option,state:false})
         this.option=option
@@ -184,7 +201,8 @@ export default {
        * 在畫布上獲取圖像並將其提交給模型進行預測
        */
       let input_img = this.getImageData();
-      this.raw_predictions = this.big_model.predictClass(input_img);
+      this.raw_predictions = this.small_model.predictClass(input_img);
+      // this.raw_predictions = this.big_model.predictClass(input_img);
     },
     submitDrawing() {
       /**
@@ -268,6 +286,7 @@ export default {
        * Get all classes from models
        */
        return BIG_CLASS_NAMES_CHINESS;
+      //  return BIG_CLASS_NAMES_CHINESS;
     },
   },
   watch:{
@@ -285,6 +304,7 @@ export default {
   created(){
       //  產生第一個題目
       this.randomQuestion()
+      console.log('產生第一個題目')
   },
   beforeMount(){
       // 挂载前
@@ -298,7 +318,6 @@ export default {
     this.canvas = new fabric.Canvas("panel", {
       isDrawingMode: true,//鉛筆模式
     });
-
     this.canvas.backgroundColor = "#FFFFFF";
     this.canvas.freeDrawingBrush.width = that.brushWidth;
     this.canvas.renderAll();
@@ -316,9 +335,11 @@ export default {
       }
     });
 
+    this.small_model = new TFModel();
     this.big_model = new TFModel();
 
     Promise.all([
+      this.small_model.loadModel(SMALL_MODEL_URL),
       this.big_model.loadModel(BIG_MODEL_URL),
     ]).then(() => {
       this.loadingModelOver = true;
