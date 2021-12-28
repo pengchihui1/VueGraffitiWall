@@ -3,6 +3,7 @@ import Router from 'vue-router'
 import Game from './views/Game.vue'
 import Home from './views/Home.vue'
 import Train from './views/Train.vue'
+import Pictionary from './views/Pictionary.vue'
 
 Vue.use(Router)
 
@@ -12,6 +13,11 @@ export default new Router({
       path: '/',
       name: 'game',
       component: Game
+    },
+    {
+      path: '/pictionary',
+      name: 'pictionary',
+      component: Pictionary
     },
     {
       path: '/home',
