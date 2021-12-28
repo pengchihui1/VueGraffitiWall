@@ -33,7 +33,7 @@
             <div style='font-size:20px; margin-bottom: 4px;'>
               <button style='margin-right: 10px;' @click="clearCanvas()">清除</button>
               <button style='margin-right: 10px;' @click="nextQuestion()" v-show="options.length<=5">下一題</button>
-              <button @click="clearCanvas()">退出</button>
+              <!-- <button @click="clearCanvas()">退出</button> -->
             </div>
             <main class="main">
               <div class="main__content">
