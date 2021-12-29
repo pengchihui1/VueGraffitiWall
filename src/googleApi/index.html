@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Drawing recognition</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="./css/iziToast.min.css">
+    <link rel="stylesheet" href="./css/main.css">
+  </head>
+  <body>
+    <div class="no-mobile">
+      <p>您正在使用手機瀏覽器.</p>
+      <p>此頁面僅適用於桌面瀏覽器.</p>
+      <span class="doomguy"></span>
+    </div>
+    <div class="overlay">
+      <div class="overlay-text-container">
+        <h1>讓我們開始畫圖!</h1>
+        <p>您有 20 秒的時間來繪製每張圖片。谷歌神經網絡會嘗試猜測你在畫什麼。 繪製簡單的大圖。</p>
+        <button class="green-button start-button" type="button" name="start-button">開始塗鴉遊戲!</button>
+      </div>
+    </div>
+    <div class="option-show" style="display: none;justify-content: center;">
+       <div class="overlay-text-container">
+        <h2>塗鴉 <span id='currentNum'></span>/ 6</h2>
+        <h2 class="drawthis">畫出: <span id="picture"></span></h2>
+        <p>時間只有20秒</p>
+        <button class="green-button ok-button" type="button" name="ok-button">知道了!</button>
+      </div>
+    </div>
+    <div class="main" style="display: none;">
+      <nav class="nav">
+        <div class="header-container">
+          <h3>請畫出</h2>
+          <h3 class="drawthis"><span id="pictureName"></span></h2>
+          <div >倒計時: 00:<span class="countdown">20</span></div>
+        </div>
+        <div class="button-container">
+          <button class="green-button clear" type="button" name="clean">橡皮擦</button>
+          <button class="green-button next-button" type="button" name="next-button">下一題</button>
+          <button class="green-button retry-button" type="button" name="retry">退回首頁</button>
+        </div>
+      </nav>
+      <div class="canvas-container">
+        <canvas id="canvas" width="600" height="600"></canvas>
+      </div>
+    </div>
+
+    <div class="gameover" style="display:none;justify-content:center; text-align: center;">
+      <div class="gameover-result">
+        <p >謝謝你來玩，繪畫結果</p>
+        <div id="pointsscored"></div>
+        <p>再試一次?</p>
+        <button class="green-button retry-button" type="button" name="retry">當然</button>
+       </div>
+    </div>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script src="./js/iziToast.min.js"></script>
+    <script src="./js/canvas.js"></script>
+    <script src="./js/actions.js"></script>
+  </body>
+</html>

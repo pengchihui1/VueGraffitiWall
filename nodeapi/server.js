@@ -21,7 +21,10 @@ const categories = [
   'beard',
   'angel',
   'light bulb',
-  'mushroom'
+  'mushroom',
+  'pool',
+  'potato',
+  'ladder'
 ];
 
 function normalize(drawing) {
@@ -64,21 +67,25 @@ function resultFromNetwork(result) {
     .value();
 }
 
-const network = neataptic.Network.fromJSON(JSON.parse(fs.readFileSync(path.join(__dirname, 'neural-net.json')))); // prettier-ignore
+const network = neataptic.Network.fromJSON(JSON.parse(fs.readFileSync(path.join(__dirname, 'neural-net_bak.json')))); // prettier-ignore 模型文件
 
 function guess(drawing) {
 
   const normalizedDrawing = normalize(drawing);
-  const stim = quickDraw._strokeToArray(normalizedDrawing, 28);
-  
+  const stim = quickDraw._strokeToArray(normalizedDrawing, 28); // 可控制用來描邊的點劃線的圖案範式
+
   const result = network.activate(stim);
+
+  console.log("模型長度",result.length)
+
   console.log('result', _.chain(_.zip(result, categories))
     .sortBy(([score, category]) => -score)
     .value())
   /* prettier-ignore */
   const options = resultFromNetwork(result);
   
-  
+  console.log(options)
+
   let word = "";
   if (options.length > 0) {
     word = options[0][1];
@@ -88,8 +95,8 @@ function guess(drawing) {
 }
 
 app.post('/api/guess', (req, res) => {
-  console.log('req.body.drawing', req.body.drawing)
-  console.log('\n\n')
+  // console.log('req.body.drawing', req.body.drawing)
+  // console.log('\n\n')
   const result = guess(req.body.drawing);
 
   res.json(result);

@@ -9,8 +9,8 @@
     <div style="display: flex; flex-direction: row; transform: scale(0.5)">
       <pc-drawing-pad
         v-model="normalizedDrawing"
-        :height="255"
-        :width="255"
+        :height="400"
+        :width="400"
         :read-only="true"
       />
       <pc-drawing-pad
@@ -55,8 +55,7 @@ import { throttle } from "lodash";
 const guess = throttle(async (pad, drawing) => {
   //  https://vue-graffiti-wall.vercel.app:4000/api/guess
   //  http://localhost:4000/api/guess
-  axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';  //此处是增加的代码，设置请求头的类型
-  const result = await axios.post("https://vue-graffiti-wall.vercel.app:4000/api/guess", {
+  const result = await axios.post("http://localhost:4000/api/guess", {
     drawing,
   });
   pad.normalizedDrawing = result.data.normalizedDrawing;

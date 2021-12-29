@@ -102,6 +102,7 @@ const guess = throttle(async (pad, drawing) => {
   pad.normalizedDrawing = result.data.normalizedDrawing;
   pad.word = result.data.word;
   pad.likey.push(result.data.word);
+  console.log("傳入的數據",drawing,"獲得的數據",result.data.normalizedDrawing)
 }, 1000);
 
 export default {
