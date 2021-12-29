@@ -48,14 +48,17 @@
 import PcButton from "../common/button.vue";
 import PcDrawingPad from "../common/drawing-pad.vue";
 import axios from "axios";
+import qs from 'qs'
 
 import { throttle } from "lodash";
 
 const guess = throttle(async (pad, drawing) => {
-  const result = await axios.post("http://localhost:4000/api/guess", {
+  //  https://vue-graffiti-wall.vercel.app:4000/api/guess
+  //  http://localhost:4000/api/guess
+  axios.defaults.headers['Content-Type'] = 'application/x-www-form-urlencoded;charset=UTF-8';  //此处是增加的代码，设置请求头的类型
+  const result = await axios.post("https://vue-graffiti-wall.vercel.app:4000/api/guess", {
     drawing,
   });
-
   pad.normalizedDrawing = result.data.normalizedDrawing;
   pad.word = result.data.word;
 }, 100);

@@ -157,8 +157,8 @@ class TFModel {
   loadModel(path_to_layers) {
     return tf.loadLayersModel(path_to_layers).then(model => {
       this.model = model;
-      // warm up the model 預熱模型
-      // tf.tidy(() => this.model.predict(tf.zeros([1, 28, 28, 1])).dataSync());
+      // warm up the model 預熱模型 28位矢量圖
+      tf.tidy(() => this.model.predict(tf.zeros([1, 28, 28, 1])).dataSync());
     });
   }
   // 圖像進行猜測

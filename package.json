@@ -71,5 +71,6 @@
   "browserslist": [
     "> 1%",
     "last 2 versions"
-  ]
+  ],
+  "proxy": "https://express-vercel-theta.vercel.app/"
 }

@@ -101,10 +101,10 @@ export default {
     },
 
     clear() {
-      //this.value = [];
-
+      // this.value = [];
       this.value.splice(0, this.value.length);
-      this.redraw();
+      // this.redraw();
+      this.sketch.clear();
     },
   },
 };

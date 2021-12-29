@@ -62,7 +62,11 @@
 
 <script>
 import "fabric";
-import { SMALL_CLASS_NAMES, BIG_CLASS_NAMES ,BIG_CLASS_NAMES_CHINESS} from "../utils/class_names";
+import {
+  SMALL_CLASS_NAMES,
+  BIG_CLASS_NAMES,
+  BIG_CLASS_NAMES_CHINESS,
+} from "../utils/class_names";
 
 import ECharts from "vue-echarts";
 import "echarts/lib/chart/bar";
@@ -145,6 +149,7 @@ export default {
        * Get image on canvas and submit it to the model for prediction
        */
       let input_img = this.getImageData();
+      console.log(input_img);
       if (!this.toggleBigModel) {
         this.raw_predictions = this.small_model.predictClass(input_img);
       } else {
@@ -251,7 +256,9 @@ export default {
       return {
         xAxis: {
           type: "category",
-          data: !this.toggleBigModel? this.getTopClassNames : this.getTopClassNames.map(item=>item.chineseName) ,
+          data: !this.toggleBigModel
+            ? this.getTopClassNames
+            : this.getTopClassNames.map((item) => item.chineseName),
           axisLabel: {
             rotate: 0,
           },
@@ -311,15 +318,14 @@ export default {
     this.canvas.on("mouse:up", function (e) {
       that.submitCanvas();
       that.mousePressed = false;
-    
     });
     this.canvas.on("mouse:down", function (e) {
       that.mousePressed = true;
     });
     this.canvas.on("mouse:move", function (e) {
       // that.recordCoor(e);
-      if(that.mousePressed){
-          that.recordCoor(e);
+      if (that.mousePressed) {
+        that.recordCoor(e);
       }
     });
 
